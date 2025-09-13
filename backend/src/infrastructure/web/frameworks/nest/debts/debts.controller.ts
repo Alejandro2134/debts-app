@@ -6,7 +6,9 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +19,11 @@ import { CreateDebt } from '@application/use_cases/debts/Create';
 import { DebtImplementation } from '@infrastructure/persistency/orm/sequelize/implementations/DebtImplementation';
 import { DeleteDebt } from '@application/use_cases/debts/Delete';
 import { ListDebts } from '@application/use_cases/debts/List';
+import { GetDebtsFilterDTO } from '@application/dto/GetDebtsDTO';
+import { UpdateDebt } from '@application/use_cases/debts/Update';
+import { UpdateDebtDTO } from '@application/dto/UpdateDebtDTO';
+import { GetById } from '@application/use_cases/debts/GetById';
+import { DebtCacheImplementation } from '@infrastructure/persistency/cache/redis/implementations/DebtCacheImplementation';
 
 @Controller('debts')
 export class DebtsController {
@@ -24,11 +31,27 @@ export class DebtsController {
   private readonly createDebtUseCase: CreateDebt;
   private readonly deleteDebtUseCase: DeleteDebt;
   private readonly listDebtsUseCase: ListDebts;
+  private readonly updateDebtUseCase: UpdateDebt;
+  private readonly getByIdUseCase: GetById;
 
-  constructor(debtImplementation: DebtImplementation) {
+  constructor(
+    debtImplementation: DebtImplementation,
+    debtCacheImplementation: DebtCacheImplementation,
+  ) {
     this.createDebtUseCase = new CreateDebt(debtImplementation);
-    this.deleteDebtUseCase = new DeleteDebt(debtImplementation);
+    this.deleteDebtUseCase = new DeleteDebt(
+      debtImplementation,
+      debtCacheImplementation,
+    );
     this.listDebtsUseCase = new ListDebts(debtImplementation);
+    this.updateDebtUseCase = new UpdateDebt(
+      debtImplementation,
+      debtCacheImplementation,
+    );
+    this.getByIdUseCase = new GetById(
+      debtImplementation,
+      debtCacheImplementation,
+    );
   }
 
   @UseGuards(AuthGuard)
@@ -43,8 +66,8 @@ export class DebtsController {
     return this.debtMapper.fromDomainToDTO(res);
   }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async deleteDebt(
     @Request() req: { user: { sub: number } },
@@ -56,9 +79,35 @@ export class DebtsController {
 
   @UseGuards(AuthGuard)
   @Get()
-  async listDebts(@Request() req: { user: { sub: number } }) {
+  async listDebts(
+    @Request() req: { user: { sub: number } },
+    @Query() query: GetDebtsFilterDTO,
+  ) {
     const { sub } = req.user;
-    const res = await this.listDebtsUseCase.execute(sub);
-    return res.map(this.debtMapper.fromDomainToDTO);
+    const res = await this.listDebtsUseCase.execute(sub, query);
+    return res.map(this.debtMapper.fromDomainToDTOs);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async updateUpdate(
+    @Request() req: { user: { sub: number } },
+    @Param('id') id: number,
+    @Body() debt: UpdateDebtDTO,
+  ) {
+    const { sub } = req.user;
+    const res = await this.updateDebtUseCase.execute(debt, id, sub);
+    return this.debtMapper.fromDomainToDTO(res);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  async getById(
+    @Request() req: { user: { sub: number } },
+    @Param('id') id: number,
+  ) {
+    const { sub } = req.user;
+    const res = await this.getByIdUseCase.excute(id, sub);
+    return this.debtMapper.fromDomainToDTO(res);
   }
 }

@@ -1,5 +1,5 @@
 import { PersistencyError } from '@application/errors/PersistencyError';
-import { Debt } from '@domain/entities/Debt';
+import { Debt, IDebtFilter } from '@domain/entities/Debt';
 import { IDebtRepository } from '@domain/repositories/DebtRepository';
 import { Debt as DebtModel } from '@infrastructure/persistency/orm/sequelize/models/Debt';
 import { InjectModel } from '@nestjs/sequelize';
@@ -30,8 +30,18 @@ export class DebtImplementation implements IDebtRepository {
     }
   }
 
-  update(): Promise<Debt> {
-    throw new Error('Method not implemented.');
+  async update(item: Debt, id: number): Promise<void> {
+    try {
+      const model = this.fromDomainToModel(item);
+      await this.debtModel.update(model, {
+        where: {
+          debt_id: id,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new PersistencyError('Error updating debt');
+    }
   }
 
   async delete(id: number): Promise<void> {
@@ -43,12 +53,17 @@ export class DebtImplementation implements IDebtRepository {
     }
   }
 
-  async list(userId: number): Promise<Debt[]> {
+  async list(userId: number, query: IDebtFilter): Promise<Debt[]> {
     try {
+      const where: { [filter: string]: string | number } = {
+        user_id: userId,
+      };
+
+      if (query.status) where['status'] = query.status;
+
       const debts = await this.debtModel.findAll({
-        where: {
-          user_id: userId,
-        },
+        where,
+        order: [['debt_id', 'ASC']],
       });
 
       return debts.map(this.fromModelToDomain);

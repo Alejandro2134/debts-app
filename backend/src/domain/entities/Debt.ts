@@ -6,6 +6,16 @@ interface IDebt {
   userId?: number;
 }
 
+export interface IDebtFilter {
+  status?: string;
+}
+
+export interface IUpdateDebt {
+  status?: string;
+  creditor?: string;
+  amount?: number;
+}
+
 export class Debt {
   private id?: number;
   private status: 'pending' | 'paid';
@@ -43,5 +53,17 @@ export class Debt {
 
   setUserId(userId: number) {
     this.userId = userId;
+  }
+
+  setCreditor(creditor: string) {
+    this.creditor = creditor;
+  }
+
+  setAmount(amount: number) {
+    this.amount = amount;
+  }
+
+  setStatus(status: 'pending' | 'paid') {
+    this.status = status;
   }
 }

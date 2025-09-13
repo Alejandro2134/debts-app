@@ -1,3 +1,4 @@
+import { ConflictError } from '@application/errors/ConflictError';
 import { User } from '@domain/entities/User';
 import { ISecurityUtilsRepository } from '@domain/repositories/SecurityUtilsRepository';
 import { IUserRepository } from '@domain/repositories/UserRepository';
@@ -10,7 +11,7 @@ export class Register {
 
   async execute(item: User) {
     const user = await this.userRepository.getByEmail(item.getEmail());
-    if (user) throw new Error('');
+    if (user) throw new ConflictError('sent email already exists');
 
     const hash = await this.securityUtilsRepository.generatePasswordHash(
       item.getPassword(),

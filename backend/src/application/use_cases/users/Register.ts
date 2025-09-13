@@ -9,6 +9,9 @@ export class Register {
   ) {}
 
   async execute(item: User) {
+    const user = await this.userRepository.getByEmail(item.getEmail());
+    if (user) throw new Error('');
+
     const hash = await this.securityUtilsRepository.generatePasswordHash(
       item.getPassword(),
     );

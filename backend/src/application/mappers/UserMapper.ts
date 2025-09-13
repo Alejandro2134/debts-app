@@ -1,9 +1,9 @@
 import { GetUserDTO } from '@application/dto/GetUserDTO';
-import { RegisterDTO } from '@application/dto/RegisterDTO';
+import { UserDTO } from '@application/dto/UserDTO';
 import { User } from '@domain/entities/User';
 
 export class UserMapper {
-  fromDTOToDomain(dto: RegisterDTO) {
+  fromDTOToDomain(dto: UserDTO) {
     return new User({
       email: dto.email,
       password: dto.password,

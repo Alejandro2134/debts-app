@@ -43,6 +43,8 @@ Debes tener las siguientes tecnologías instaladas en tu computador para poder l
 
 ## Diagrama entidad relación
 
+<img width="531" height="241" alt="debtapp drawio" src="https://github.com/user-attachments/assets/28d8c947-5cbb-491f-97a0-69d388ed8aad" />
+
 ## Endpoints del backend
 
 ### GET /debts -> Listar deudas
@@ -134,7 +136,7 @@ JSON Body
 
 ## Decisiones técnicas
 
-## Clean Architecture
+## Clean Architecture (backend)
 
 Se adoptó una arquitectura limpia para desacoplar la lógica de negocio de las dependencias externas. Esta separación permite que las pruebas unitarias se centren en las capas de aplicación y dominio, que contienen la lógica central y proporcionan el mayor valor de cobertura. Al basarse en abstracciones (como repositorios) en lugar de implementaciones concretas, se reduce la necesidad de crear mocks complejos. Las implementaciones reales de estas abstracciones residen en la capa de infraestructura e implementan contratos definidos en el dominio. Estas implementaciones se inyectan a través de los controladores, lo que permite que el sistema siga siendo flexible, escalable y fácil de mantener. Como resultado, el proyecto puede evolucionar y cambiar de tecnologías (por ejemplo, bases de datos o frameworks) sin afectar a la lógica de negocio.
 

@@ -7,14 +7,15 @@ type Debt = {
   status: string
 }
 
-const useDebts = () => {
+const useDebts = (status?: 'pending' | 'paid') => {
   const [debts, setDebts] = useState<Debt[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchDebts = async () => {
       try {
-        const res = await client.get('/debts')
+        const url = status ? `/debts?status=${status}` : '/debts'
+        const res = await client.get(url)
         setDebts(res.data)
       } catch (err) {
         console.error(err)
@@ -24,7 +25,7 @@ const useDebts = () => {
     }
 
     fetchDebts()
-  }, [])
+  }, [status])
 
   return { debts, loading }
 }

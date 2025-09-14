@@ -89,6 +89,7 @@ export class DebtImplementation implements IDebtRepository {
       status: model.status,
       userId: model.user_id,
       id: model.debt_id,
+      createdAt: model.created_at,
     });
   }
 }

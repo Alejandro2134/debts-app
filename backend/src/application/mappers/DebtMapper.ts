@@ -15,6 +15,7 @@ export class DebtMapper {
     return new GetDebtsDTO({
       creditor: domain.getCreditor(),
       id: domain.getId()!,
+      status: domain.getStatus(),
     });
   }
 
@@ -24,6 +25,7 @@ export class DebtMapper {
       creditor: domain.getCreditor(),
       id: domain.getId()!,
       status: domain.getStatus(),
+      created_at: domain.getCreatedAt()!,
     });
   }
 }

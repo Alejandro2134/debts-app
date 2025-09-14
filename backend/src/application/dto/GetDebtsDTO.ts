@@ -3,15 +3,18 @@ import { IsEnum, IsOptional } from 'class-validator';
 interface IGetDebtsDTO {
   id: number;
   creditor: string;
+  status: string;
 }
 
 export class GetDebtsDTO {
   id: number;
   creditor: string;
+  status: string;
 
   constructor(item: IGetDebtsDTO) {
     this.id = item.id;
     this.creditor = item.creditor;
+    this.status = item.status;
   }
 }
 

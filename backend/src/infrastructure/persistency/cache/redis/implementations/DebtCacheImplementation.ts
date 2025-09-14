@@ -54,6 +54,7 @@ export class DebtCacheImplementation implements IDebtCacheRepo {
       id: entity.getId()!,
       status: entity.getStatus(),
       user_id: entity.getUserId()!,
+      created_at: entity.getCreatedAt()!,
     };
   }
 
@@ -64,6 +65,7 @@ export class DebtCacheImplementation implements IDebtCacheRepo {
       id: model.id,
       status: model.status,
       userId: model.user_id,
+      createdAt: model.created_at,
     });
   }
 }

@@ -4,6 +4,7 @@ interface IDebt {
   creditor: string;
   amount: number;
   userId?: number;
+  createdAt?: Date;
 }
 
 export interface IDebtFilter {
@@ -22,6 +23,7 @@ export class Debt {
   private creditor: string;
   private amount: number;
   private userId?: number;
+  private createdAt?: Date;
 
   constructor(item: IDebt) {
     this.status = item.status || 'pending';
@@ -29,6 +31,7 @@ export class Debt {
     this.amount = item.amount;
     this.id = item.id;
     this.userId = item.userId;
+    this.createdAt = item.createdAt;
   }
 
   getStatus() {
@@ -49,6 +52,10 @@ export class Debt {
 
   getId() {
     return this.id;
+  }
+
+  getCreatedAt() {
+    return this.createdAt;
   }
 
   setUserId(userId: number) {

@@ -21,9 +21,14 @@ export class Login {
     );
     if (!isPasswordValid) throw new UnauthorizedError();
 
-    return await this.securityUtilsRepository.generateJWT({
+    const jwt = await this.securityUtilsRepository.generateJWT({
       sub: user.getId()!,
       email: user.getEmail(),
     });
+
+    return {
+      access_token: jwt,
+      user_email: user.getEmail(),
+    };
   }
 }

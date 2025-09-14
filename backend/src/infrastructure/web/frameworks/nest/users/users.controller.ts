@@ -31,7 +31,7 @@ export class UsersController {
   @Post('/login')
   async login(@Body() user: UserDTO) {
     const userDomain = this.userMapper.fromDTOToDomain(user);
-    const jwt = await this.loginUseCase.execute(userDomain);
-    return { access_token: jwt };
+    const res = await this.loginUseCase.execute(userDomain);
+    return res;
   }
 }

@@ -4,4 +4,5 @@ export interface ICacheDebt {
   creditor: string;
   amount: number;
   user_id: number;
+  created_at: Date;
 }

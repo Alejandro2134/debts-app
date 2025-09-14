@@ -8,6 +8,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -34,6 +35,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = exception.message;
     } else if (exception instanceof ForbiddenError) {
       status = HttpStatus.FORBIDDEN;
+      message = exception.message;
+    } else if (exception instanceof UnauthorizedException) {
+      status = exception.getStatus();
       message = exception.message;
     } else if (exception instanceof Error) {
       message = exception.message;
